@@ -231,7 +231,7 @@ settings = {
                 "title": "Extend Chain Distance",
                 "desc": "The length in mm that will be extended during chain calibration",
                 "key": "chainExtendLength",
-                "default": 1651,
+                "default": 1650,
                 "firmwareKey": 11
             },
             {
@@ -314,7 +314,7 @@ settings = {
             {
                 "type": "string",
                 "title": "Chain Sag Correction Value for Triangular Kinematics",
-                "desc": "The scaled value computed by the calibration process to calculate chain sag based on sled weight, chain weight, and workspace angle",
+                "desc": "The scaled value computed by the calibration process to calculate chain sag based on sled weight, chain weight, and workspace angle\\ndefault setting: %s",
                 "key": "chainSagCorrection",
                 "default": 0,
                 "firmwareKey": 37
@@ -484,42 +484,6 @@ settings = {
                 "desc": "Zoom scale for 'Reset View' command.",
                 "key": "viewScale",
                 "default": ".45"
-            },
-            {
-                "type": "string",
-                "title": "Run",
-                "desc": "Pressing this key is the same as clicking the 'Start' button. Note combinations of keys like \'shift\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "runKey",
-                "default": "r"
-            },
-            {
-                "type": "string",
-                "title": "Pause",
-                "desc": "Pressing this key is the same as clicking the 'Pause' button. Note combinations of keys like \'shift\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "pauseKey",
-                "default": "p"
-            },
-            {
-                "type": "string",
-                "title": "Stop",
-                "desc": "Pressing this key is the same as clicking the 'Stop' button. Note upper case or shifted characters or combinations of keys like \'ctrl\' + \'=\' may not work as expected. Program must be restarted to take effect.",
-                "key": "stopKey",
-                "default": "s"
-            },
-            {
-                "type": "options",
-                "title": "FAKE_SERVO allowed",
-                "desc": "Should GroundControl allow FAKE_SERVO mode?",
-                "key": "fsModeAllowed",
-                "options": ["Not allowed", "Allowed"],
-                "default": "Not allowed",
-            },
-            {
-                "type": "string",
-                "title": "FAKE_SERVO Off",
-                "desc": "Pressing this key will turn FAKE_SERVO off. Press this key along with 'cmd', 'alt' , or 'cmd' to turn FAKE_SERVO on. Program must be restarted to take effect.",
-                "key": "fakeServo_Off",
-                "default": "f"
             }
         ],
     "Computed Settings": #These are setting calculated from the user inputs on other settings, they are not directly seen by the user
@@ -685,21 +649,21 @@ def syncFirmwareKey(firmwareKey, value, data):
         for option in settings[section]:
             if 'firmwareKey' in option and option['firmwareKey'] == firmwareKey:
                 storedValue = data.config.get(section, option['key'])
-
-		if (option['key'] == "spindleAutomate"):
-                    if (storedValue == "Servo"):
-                        storedValue = 1
-                    elif (storedValue == "Relay_High"):
-                        storedValue = 2
-                    elif (storedValue == "Relay_Low"):
-                        storedValue = 3
-                    else:
-                        storedValue = 0
-
-                if not isClose(float(storedValue), value):
-                    data.gcode_queue.put("$" + str(firmwareKey) + "=" + str(storedValue))
+#			if (option['key'] == "spindleAutomate"):
+            if (option['key'] == "spindleAutomate"):
+                if (storedValue == "Servo"):
+                    storedValue = 1
+                elif (storedValue == "Relay_High"):
+                    storedValue = 2
+                elif (storedValue == "Relay_Low"):
+                    storedValue = 3
                 else:
-                    break
+                    storedValue = 0
+
+            if not isClose(float(storedValue), value):
+                data.gcode_queue.put("$" + str(firmwareKey) + "=" + str(storedValue))
+            else:
+                break
     return
 
 def isClose(a, b, rel_tol=1e-06):
