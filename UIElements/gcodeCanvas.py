@@ -91,8 +91,6 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         scaleFactor = .03
         anchor = (0,0)
         
-#         print 'gcodeCanvas',keycode, text, modifiers  # handy for exploring keyboard input
-        
         if keycode[1] == self.data.config.get('Ground Control Settings', 'zoomIn'):
             mat = Matrix().scale(1-scaleFactor, 1-scaleFactor, 1)
             self.scatterInstance.apply_transform(mat, anchor)
@@ -101,33 +99,8 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             mat = Matrix().scale(1+scaleFactor, 1+scaleFactor, 1)
             self.scatterInstance.apply_transform(mat, anchor)
             return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'runKey'):
-            self.parent.startRun() # "click" the 'Run' button
-            return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'pauseKey'):
-            self.parent.pause() # "click" the 'Pause' button
-            return True # we handled this key - don't pass to other callbacks
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'stopKey'):
-            self.parent.stopRun() # "click" the 'Stop' button
-            return True # we handled this key - don't pass to other callbacks
-#         elif keycode[1] == self.data.config.get('Ground Control Settings', 'fakeServo_Off'):
-#             if self.data.config.get('Ground Control Settings', 'fsModeAllowed') == "Allowed":
-#                 if 'ctrl' in modifiers or 'alt' in modifiers or 'meta' in modifiers:
-#                     self.data.gcode_queue.put("B99 ON \n")
-#                 else:
-#                     self.data.gcode_queue.put("B99 OFF \n")
-#                 return True # we handled this key - don't pass to other callbacks
-#             else:
-#                 return False # we didn't handle this key - let next callback handle it
-        elif keycode[1] == self.data.config.get('Ground Control Settings', 'fakeServo_Off'):
-            if 'ctrl' in modifiers or 'alt' in modifiers or 'meta' in modifiers:
-                if self.data.config.get('Ground Control Settings', 'fsModeAllowed') == "Allowed":
-                    self.data.gcode_queue.put("B99 ON \n")
-            else:
-                self.data.gcode_queue.put("B99 OFF \n")
-            return True # we handled this key - don't pass to other callbacks
         else:
-                return False # we didn't handle this key - let next callback handle it
+            return False # we didn't handle this key - let next callback handle it
 
     def isClose(self, a, b):
         return abs(a-b) <= self.data.tolerance
@@ -314,7 +287,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.yPosition = yTarget
             self.zPosition = zTarget
         except:
-            print "Unable to draw line on screen: " + gCodeLine
+            print ("Unable to draw line on screen: " + gCodeLine)
     
     def drawArc(self,gCodeLine,command):
         '''
@@ -385,7 +358,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             self.xPosition = xTarget
             self.yPosition = yTarget
         except:
-            print "Unable to draw arc on screen: " + gCodeLine
+            print ("Unable to draw arc on screen: " + gCodeLine)
 
     def clearGcode(self):
         '''
@@ -491,9 +464,9 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             
             return gCodeLine
         except ValueError:
-            print "line could not be moved:"
-            print originalLine
-            return originalLine
+            print ("line could not be moved:")
+            print (originalLine)
+            return (originalLine)
     
     def loadNextLine(self):
         '''
@@ -557,7 +530,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
             pass
         
         if gString == 'G18':
-            print "G18 not supported"
+            print ("G18 not supported")
         
         if gString == 'G20':
             self.canvasScaleFactor = self.INCHES
@@ -615,7 +588,7 @@ class GcodeCanvas(FloatLayout, MakesmithInitFuncs):
         #Check to see if file is too large to load
         if len(self.data.gcode) > self.maxNumberOfLinesToRead:
             errorText = "The current file contains " + str(len(self.data.gcode)) + " lines of gcode.\nrendering all " +  str(len(self.data.gcode)) + " lines simultaneously may crash the\n program, only the first " + self.maxNumberOfLinesToRead + "lines are shown here.\nThe complete program will cut if you choose to do so unless the home position is moved from (0,0)."
-            print errorText
+            print (errorText)
             self.data.message_queue.put("Message: " + errorText)
         
         self.callBackMechanism(self.updateGcode)

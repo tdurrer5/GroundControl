@@ -34,7 +34,7 @@ class SerialPortThread(MakesmithInitFuncs):
             time.sleep (self.MINTimePerLine) # could use (taken - MINTimePerLine)
         
         message = message.encode()
-        print "Sending: " + str(message)
+        print ("Sending: " + str(message))
         
         message = message + '\n'
         
@@ -89,7 +89,7 @@ class SerialPortThread(MakesmithInitFuncs):
             else:
                 self.data.uploadFlag = 0
                 self.data.gcodeIndex = 0
-                print "Gcode Ended"
+                print ("Gcode Ended")
     
     def getmessage (self):
         #opens a serial connection called self.serialInstance
@@ -114,18 +114,12 @@ class SerialPortThread(MakesmithInitFuncs):
             msg = ""
             subReadyFlag = True
             
-            
-            if self.serialInstance.isOpen(): 
-                self.serialInstance.close()
-            
+            self.serialInstance.parity = serial.PARITY_ODD #This is something you have to do to get the connection to open properly. I have no idea why.
+            self.serialInstance.close()
             self.serialInstance.open()
-            
-            # reset Arduino boards by toggling DTR signal
-            self.serialInstance.dtr = False
-            self.serialInstance.dtr = True
-            
-            # reset non-Arduino boards by sending 
-            self._write(b'\x18') # ctrl-X
+            self.serialInstance.close()
+            self.serialInstance.parity = serial.PARITY_NONE
+            self.serialInstance.open()
             
             #print "port open?:"
             #print self.serialInstance.isOpen()
@@ -179,7 +173,7 @@ class SerialPortThread(MakesmithInitFuncs):
                         if self.bufferSpace > len(self.data.gcode[self.data.gcodeIndex]): #if there is space in the buffer keep sending lines
                             self.sendNextLine()
                     except IndexError:
-                        print "index error when reading gcode" #we don't want the whole serial thread to close if the gcode can't be sent because of an index error (file deleted...etc)
+                        print ("index error when reading gcode") #we don't want the whole serial thread to close if the gcode can't be sent because of an index error (file deleted...etc))
                 else:
                     if self.bufferSpace == self.bufferSize and self.machineIsReadyForData: #if the receive buffer is empty and the machine has acked the last line complete
                         self.sendNextLine()
@@ -188,7 +182,7 @@ class SerialPortThread(MakesmithInitFuncs):
                                             #Check for serial connection loss
                 #-------------------------------------------------------------------------------------
                 if time.time() - self.lastMessageTime > 2:
-                    print "Connection Timed Out"
+                    print ("Connection Timed Out")
                     self.data.message_queue.put("Connection Timed Out\n")
                     if self.data.uploadFlag:
                         self.data.message_queue.put("Message: USB connection lost. This has likely caused the machine to loose it's calibration, which can cause erratic behavior. It is recommended to stop the program, remove the sled, and perform the chain calibration process. Press Continue to override and proceed with the cut.")

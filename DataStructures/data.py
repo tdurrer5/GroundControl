@@ -7,8 +7,8 @@ from kivy.properties                                  import NumericProperty
 from kivy.event                                       import EventDispatcher
 from DataStructures.logger                            import   Logger
 from DataStructures.loggingQueue                      import   LoggingQueue
-import Queue
-
+#from queue import Queue
+import queue
 class Data(EventDispatcher):
     '''
 
@@ -26,7 +26,7 @@ class Data(EventDispatcher):
     
     #Gcodes contains all of the lines of gcode in the opened file
     gcode      = ObjectProperty([])
-    version    = '1.28'
+    version    = '1.26'
     #all of the available COM ports
     comPorts   = []
     #This defines which COM port is used
@@ -95,8 +95,8 @@ class Data(EventDispatcher):
     Queues
     '''
     message_queue   =  LoggingQueue(logger)
-    gcode_queue     =  Queue.Queue()
-    quick_queue     =  Queue.Queue()
+    gcode_queue     =  queue.Queue()
+    quick_queue     =  queue.Queue()
     
     def __init__(self):
         '''

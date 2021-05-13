@@ -15,7 +15,7 @@ from copy                                        import copy
 
 
 
-def dist((x1, y1), (x2, y2)):
+def dist(x1, y1, x2, y2):
     return ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 5
 
 
@@ -80,7 +80,7 @@ class ModernMenu(Widget):
                 if ml.text == '[color=3333ff]Set Home[/color]':
                     ml.callback = partial(self.parent.parent.parent.setHome, self.xPosition, self.yPosition)
             except:
-                print "unable to link circular menu functions"
+                print ("unable to link circular menu functions")
             self.animation.start(ml)
             self.add_widget(ml)
             

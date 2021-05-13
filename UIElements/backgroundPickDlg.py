@@ -20,7 +20,7 @@ class BackgroundPickDlg(GridLayout, MakesmithInitFuncs):
         self.update()
 
     def update(self, *args):
-        if self.imWidg.size[0] is not 100 and self.imWidg.size[1] is not 100:
+        if self.imWidg.size[0] != 100 and self.imWidg.size[1] != 100:
             # Widget is stable, update the textures bounds
             self.w, self.h = self.imWidg.size
             self.coeff_size = [self.w, self.h, self.w, self.h,
@@ -45,12 +45,12 @@ class BackgroundPickDlg(GridLayout, MakesmithInitFuncs):
         i = 0
         for (p, s) in zip(self.coeff_size, self.tex_selection):
             if i % 2:  # y coord
-                if p is not 0:
+                if p != 0:
                     coeffs.append(float(s - padOffy) / float(p))
                 else:
                     coeffs.append(0.0 - padOffy)
             else:  # x coord
-                if p is not 0:
+                if p != 0:
                     coeffs.append(float(s - padOffx) / float(p))
                 else:
                     coeffs.append(0.0 - padOffx)
